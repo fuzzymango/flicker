@@ -136,7 +136,6 @@ push $Ne6fe810
   multiply {{"(random((frame+CTRL.offset)/CTRL.waveLength) * (CTRL.maxVal-CTRL.minVal) + CTRL.minVal)"}}
   black_clamp false
   name RANDOM
-  selected true
   xpos -260
   ypos -442
  }
@@ -163,6 +162,7 @@ set Ne8376c0 [stack 0]
 push $Ne8376c0
  NoOp {
   name CTRL
+  selected true
   xpos -260
   ypos -250
   addUserKnob {20 User}
@@ -176,6 +176,6 @@ push $Ne8376c0
   addUserKnob {7 minVal}
   addUserKnob {7 waveLength R 0 100}
   waveLength 10
-  addUserKnob {7 offset}
+  addUserKnob {7 offset R -100 100}
  }
 end_group
