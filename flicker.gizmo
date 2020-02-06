@@ -1,13 +1,14 @@
 set cut_paste_input [stack 0]
-version 10.0 v5
+version 11.2 v4
 push $cut_paste_input
 Group {
  name Flicker1
  selected true
- xpos -260
- ypos -34
+ xpos -383
+ ypos -232
  addUserKnob {20 Flicker}
  addUserKnob {4 waveType l "wave  type" t "Choose the type of cuve you want to use. \nRandom: a totally randomized curve\nNoise: a pseudo \nSine: basic sine function\nTriangle: cusped sine function\nSquare: sine function using only min and max values \nSawtooth: ramps upward and sharply drops\nSawtooth Parabolic: sawtooth with a parabolic ramp\nSawtooth Parabolic Reversed: a mirrored version of sawtooth parabolic. Sharp step up to max val followed by a parabolic drop to min val\nSawtooth exponential: exponential ramp up to max val followed by steep drop to min val\nBounce: symmetric, parabolic curves\nBlip: square function with ability to change how long each blip holds. \nBlip Sine: similar to blip but uses sine waves" M {random noise sine triangle square sawtooth "sawtooth parabolic" "sawtooth parabolic reversed" "sawtooth exponential" bounce blip "blip sine" "" "" "" "" ""}}
+ waveType "sawtooth parabolic reversed"
  addUserKnob {6 floodAlpha l "flood alpha" t "Fills the alpha channel with white" -STARTLINE}
  addUserKnob {26 ""}
  addUserKnob {41 maxVal T CTRL.maxVal}
@@ -30,7 +31,7 @@ Group {
   xpos 321
   ypos -633
  }
-set N8c9caec0 [stack 0]
+set Ne6fe810 [stack 0]
  Grade {
   channels rgba
   multiply {{"((int((frame+CTRL.offset) % CTRL.waveLength)) >= 0 ? ((int((frame+CTRL.offset) % CTRL.waveLength)) <= (0+(CTRL.blipLength-1)) ? ((sin(pi*((frame+CTRL.offset) % CTRL.waveLength)/CTRL.blipLength)/2+1/2) * (2*CTRL.maxVal-2*CTRL.minVal) + (2*CTRL.minVal-CTRL.maxVal)) : CTRL.minVal)  : CTRL.minVal)"}}
@@ -40,7 +41,7 @@ set N8c9caec0 [stack 0]
   ypos -442
   addUserKnob {20 User}
  }
-push $N8c9caec0
+push $Ne6fe810
  Grade {
   channels rgba
   multiply {{"((frame+(CTRL.offset+CTRL.waveLength)) % (CTRL.waveLength+CTRL.blipLength)/(CTRL.waveLength)) *(CTRL.waveLength/CTRL.blipLength) - (CTRL.waveLength/CTRL.blipLength) >= 0 ? CTRL.maxVal : CTRL.minVal"}}
@@ -49,7 +50,7 @@ push $N8c9caec0
   xpos 840
   ypos -442
  }
-push $N8c9caec0
+push $Ne6fe810
  Grade {
   channels rgba
   multiply {{"abs(sin(pi*(frame + CTRL.offset)/CTRL.waveLength))* (CTRL.maxVal-CTRL.minVal) + CTRL.minVal"}}
@@ -58,7 +59,7 @@ push $N8c9caec0
   xpos 730
   ypos -442
  }
-push $N8c9caec0
+push $Ne6fe810
  Grade {
   channels rgba
   multiply {{"(exp(2*pi*((frame+CTRL.offset) % CTRL.waveLength)/CTRL.waveLength)-1)/exp(2*pi) * (CTRL.maxVal-CTRL.minVal) + CTRL.minVal"}}
@@ -67,7 +68,7 @@ push $N8c9caec0
   xpos 620
   ypos -442
  }
-push $N8c9caec0
+push $Ne6fe810
  Grade {
   channels rgba
   multiply {{"cos((pi*(frame+CTRL.offset)/(2*CTRL.waveLength)) % (pi/2)) * (CTRL.maxVal-CTRL.minVal) + CTRL.minVal"}}
@@ -76,7 +77,7 @@ push $N8c9caec0
   xpos 510
   ypos -442
  }
-push $N8c9caec0
+push $Ne6fe810
  Grade {
   channels rgba
   multiply {{"sin((pi*(frame+CTRL.offset)/(2*CTRL.waveLength)) % (pi/2)) * (CTRL.maxVal-CTRL.minVal) + CTRL.minVal"}}
@@ -85,7 +86,7 @@ push $N8c9caec0
   xpos 400
   ypos -442
  }
-push $N8c9caec0
+push $Ne6fe810
  Grade {
   channels rgba
   multiply {{"((frame+CTRL.offset) % CTRL.waveLength)/CTRL.waveLength * (CTRL.maxVal-CTRL.minVal) + CTRL.minVal"}}
@@ -94,7 +95,7 @@ push $N8c9caec0
   xpos 290
   ypos -442
  }
-push $N8c9caec0
+push $Ne6fe810
  Grade {
   channels rgba
   multiply {{"int(sin(2*pi*(frame+CTRL.offset)/CTRL.waveLength)+1) * (CTRL.maxVal-CTRL.minVal) + CTRL.minVal"}}
@@ -103,7 +104,7 @@ push $N8c9caec0
   xpos 180
   ypos -442
  }
-push $N8c9caec0
+push $Ne6fe810
  Grade {
   channels rgba
   multiply {{"(asin(sin(2*pi*(frame+CTRL.offset)/CTRL.waveLength))/pi+0.5) * (CTRL.maxVal-CTRL.minVal) + CTRL.minVal"}}
@@ -112,7 +113,7 @@ push $N8c9caec0
   xpos 70
   ypos -442
  }
-push $N8c9caec0
+push $Ne6fe810
  Grade {
   channels rgba
   multiply {{"(sin(2*pi*(frame+CTRL.offset)/CTRL.waveLength)+1)/2 * (CTRL.maxVal-CTRL.minVal) + CTRL.minVal"}}
@@ -121,7 +122,7 @@ push $N8c9caec0
   xpos -40
   ypos -442
  }
-push $N8c9caec0
+push $Ne6fe810
  Grade {
   channels rgba
   multiply {{"(noise((frame+CTRL.offset)/CTRL.waveLength)+1)/2 * (CTRL.maxVal-CTRL.minVal) + CTRL.minVal"}}
@@ -130,7 +131,7 @@ push $N8c9caec0
   xpos -150
   ypos -442
  }
-push $N8c9caec0
+push $Ne6fe810
  Grade {
   channels rgba
   multiply {{"(random((frame+CTRL.offset)/CTRL.waveLength) * (CTRL.maxVal-CTRL.minVal) + CTRL.minVal)"}}
@@ -146,7 +147,7 @@ push $N8c9caec0
   xpos 290
   ypos -250
  }
-set N88025390 [stack 0]
+set Ne8376c0 [stack 0]
  Shuffle {
   alpha white
   name Shuffle1
@@ -159,7 +160,7 @@ set N88025390 [stack 0]
   xpos 290
   ypos -154
  }
-push $N88025390
+push $Ne8376c0
  NoOp {
   name CTRL
   selected true
@@ -167,7 +168,7 @@ push $N88025390
   ypos -250
   addUserKnob {20 User}
   addUserKnob {7 curveValue}
-  curveValue {{"\[value \[input SWITCHER SWITCHER.which].multiply]"}}
+  curveValue {{"\[expression \[input SWITCHER SWITCHER.which].multiply]"}}
   addUserKnob {6 channels_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
   addUserKnob {7 blipLength +DISABLED R 0 100}
   blipLength 5
