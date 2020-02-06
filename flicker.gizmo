@@ -4,11 +4,10 @@ push $cut_paste_input
 Group {
  name Flicker1
  selected true
- xpos -383
- ypos -232
+ xpos -360
+ ypos -225
  addUserKnob {20 Flicker}
  addUserKnob {4 waveType l "wave  type" t "Choose the type of cuve you want to use. \nRandom: a totally randomized curve\nNoise: a pseudo \nSine: basic sine function\nTriangle: cusped sine function\nSquare: sine function using only min and max values \nSawtooth: ramps upward and sharply drops\nSawtooth Parabolic: sawtooth with a parabolic ramp\nSawtooth Parabolic Reversed: a mirrored version of sawtooth parabolic. Sharp step up to max val followed by a parabolic drop to min val\nSawtooth exponential: exponential ramp up to max val followed by steep drop to min val\nBounce: symmetric, parabolic curves\nBlip: square function with ability to change how long each blip holds. \nBlip Sine: similar to blip but uses sine waves" M {random noise sine triangle square sawtooth "sawtooth parabolic" "sawtooth parabolic reversed" "sawtooth exponential" bounce blip "blip sine" "" "" "" "" ""}}
- waveType "sawtooth parabolic reversed"
  addUserKnob {6 floodAlpha l "flood alpha" t "Fills the alpha channel with white" -STARTLINE}
  addUserKnob {26 ""}
  addUserKnob {41 maxVal T CTRL.maxVal}
@@ -137,6 +136,7 @@ push $Ne6fe810
   multiply {{"(random((frame+CTRL.offset)/CTRL.waveLength) * (CTRL.maxVal-CTRL.minVal) + CTRL.minVal)"}}
   black_clamp false
   name RANDOM
+  selected true
   xpos -260
   ypos -442
  }
@@ -163,7 +163,6 @@ set Ne8376c0 [stack 0]
 push $Ne8376c0
  NoOp {
   name CTRL
-  selected true
   xpos -260
   ypos -250
   addUserKnob {20 User}
