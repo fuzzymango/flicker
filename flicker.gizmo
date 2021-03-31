@@ -1,22 +1,23 @@
 set cut_paste_input [stack 0]
-version 10.0 v5
+version 11.2 v4
 push $cut_paste_input
 Group {
  name Flicker1
  selected true
- xpos -608
- ypos -10
  addUserKnob {20 Flicker}
- addUserKnob {4 waveType l "wave  type" t "Choose the type of cuve you want to use. \nRandom: a totally randomized curve\nNoise: a pseudo \nSine: basic sine function\nTriangle: cusped sine function\nSquare: sine function using only min and max values \nSawtooth: ramps upward and sharply drops\nSawtooth Parabolic: sawtooth with a parabolic ramp\nSawtooth Parabolic Reversed: a mirrored version of sawtooth parabolic. Sharp step up to max val followed by a parabolic drop to min val\nSawtooth exponential: exponential ramp up to max val followed by steep drop to min val\nBounce: symmetric, parabolic curves\nBlip: square function with ability to change how long each blip holds. \nBlip Sine: similar to blip but uses sine waves" M {random noise sine triangle square sawtooth "sawtooth parabolic" "sawtooth parabolic reversed" "sawtooth exponential" bounce blip "blip sine" "" "" "" "" ""}}
- addUserKnob {6 floodAlpha l "flood alpha" t "Fills the alpha channel with white" -STARTLINE}
+ addUserKnob {6 channels_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {10 channels}
+ channels rgba
  addUserKnob {26 ""}
- addUserKnob {41 maxVal T CTRL.maxVal}
- addUserKnob {41 minVal T CTRL.minVal}
- addUserKnob {41 waveLength T CTRL.waveLength}
+ addUserKnob {4 waveType l "wave type" t "Choose the type of cuve you want to use. \nRandom: a totally randomized curve\nNoise: a pseudo \nSine: basic sine function\nTriangle: cusped sine function\nSquare: sine function using only min and max values \nSawtooth: ramps upward and sharply drops\nSawtooth Parabolic: sawtooth with a parabolic ramp\nSawtooth Parabolic Reversed: a mirrored version of sawtooth parabolic. Sharp step up to max val followed by a parabolic drop to min val\nSawtooth exponential: exponential ramp up to max val followed by steep drop to min val\nBounce: symmetric, parabolic curves\nBlip: square function with ability to change how long each blip holds. \nBlip Sine: similar to blip but uses sine waves" M {random noise sine triangle square sawtooth "sawtooth parabolic" "sawtooth parabolic reversed" "sawtooth exponential" bounce blip "blip sine" "" "" "" "" "" "" ""}}
+ addUserKnob {6 floodAlpha l "flood alpha" t "Fills the incoming alpha channel with white" -STARTLINE}
+ addUserKnob {41 maxVal l max T CTRL.maxVal}
+ addUserKnob {41 minVal l min T CTRL.minVal}
+ addUserKnob {41 waveLength l "wave length" T CTRL.waveLength}
  addUserKnob {41 offset T CTRL.offset}
- addUserKnob {41 blipLength t "Adjusts the duration of the blip. The higher the value, the longer the blip. Only affects blip and blip sine wave types" T CTRL.blipLength}
+ addUserKnob {41 blipLength l "blip length" t "Adjusts the duration of the blip. The higher the value, the longer the blip. Only affects blip and blip sine wave types" T CTRL.blipLength}
  addUserKnob {26 ""}
- addUserKnob {41 curveValue T CTRL.curveValue}
+ addUserKnob {41 curveValue l "curve value" t "the current value of the curve on this specific frame" T CTRL.curveValue}
 }
  Input {
   inputs 0
@@ -24,15 +25,22 @@ Group {
   xpos 290
   ypos -754
  }
+ Shuffle {
+  alpha white
+  name Shuffle1
+  xpos 290
+  ypos -682
+  disable {{!parent.floodAlpha}}
+ }
  Dot {
   name Dot1
   note_font_size 25
   xpos 321
   ypos -633
  }
-set N85fe6540 [stack 0]
+set Nd6ec6000 [stack 0]
  Grade {
-  channels rgba
+  channels {{{parent.channels}}}
   multiply {{"((int((frame+CTRL.offset) % CTRL.waveLength)) >= 0 ? ((int((frame+CTRL.offset) % CTRL.waveLength)) <= (0+(CTRL.blipLength-1)) ? ((sin(pi*((frame+CTRL.offset) % CTRL.waveLength)/CTRL.blipLength)/2+1/2) * (2*CTRL.maxVal-2*CTRL.minVal) + (2*CTRL.minVal-CTRL.maxVal)) : CTRL.minVal)  : CTRL.minVal)"}}
   black_clamp false
   name SINE_BLIP
@@ -40,99 +48,99 @@ set N85fe6540 [stack 0]
   ypos -442
   addUserKnob {20 User}
  }
-push $N85fe6540
+push $Nd6ec6000
  Grade {
-  channels rgba
+  channels {{{parent.channels}}}
   multiply {{"((frame+(CTRL.offset+CTRL.waveLength)) % (CTRL.waveLength+CTRL.blipLength)/(CTRL.waveLength)) *(CTRL.waveLength/CTRL.blipLength) - (CTRL.waveLength/CTRL.blipLength) >= 0 ? CTRL.maxVal : CTRL.minVal"}}
   black_clamp false
   name BLIP
   xpos 840
   ypos -442
  }
-push $N85fe6540
+push $Nd6ec6000
  Grade {
-  channels rgba
+  channels {{{parent.channels}}}
   multiply {{"abs(sin(pi*(frame + CTRL.offset)/CTRL.waveLength))* (CTRL.maxVal-CTRL.minVal) + CTRL.minVal"}}
   black_clamp false
   name BOUNCE
   xpos 730
   ypos -442
  }
-push $N85fe6540
+push $Nd6ec6000
  Grade {
-  channels rgba
+  channels {{{parent.channels}}}
   multiply {{"(exp(2*pi*((frame+CTRL.offset) % CTRL.waveLength)/CTRL.waveLength)-1)/exp(2*pi) * (CTRL.maxVal-CTRL.minVal) + CTRL.minVal"}}
   black_clamp false
   name SAWTOOTH_EXPONENTIAL
   xpos 620
   ypos -442
  }
-push $N85fe6540
+push $Nd6ec6000
  Grade {
-  channels rgba
+  channels {{{parent.channels}}}
   multiply {{"cos((pi*(frame+CTRL.offset)/(2*CTRL.waveLength)) % (pi/2)) * (CTRL.maxVal-CTRL.minVal) + CTRL.minVal"}}
   black_clamp false
   name SAWTOOTH_PARABOLIC_REVERSED
   xpos 510
   ypos -442
  }
-push $N85fe6540
+push $Nd6ec6000
  Grade {
-  channels rgba
+  channels {{{parent.channels}}}
   multiply {{"sin((pi*(frame+CTRL.offset)/(2*CTRL.waveLength)) % (pi/2)) * (CTRL.maxVal-CTRL.minVal) + CTRL.minVal"}}
   black_clamp false
   name SAWTOOTH_PARABOLIC
   xpos 400
   ypos -442
  }
-push $N85fe6540
+push $Nd6ec6000
  Grade {
-  channels rgba
+  channels {{{parent.channels}}}
   multiply {{"((frame+CTRL.offset) % CTRL.waveLength)/CTRL.waveLength * (CTRL.maxVal-CTRL.minVal) + CTRL.minVal"}}
   black_clamp false
   name SAWTOOTH
   xpos 290
   ypos -442
  }
-push $N85fe6540
+push $Nd6ec6000
  Grade {
-  channels rgba
+  channels {{{parent.channels}}}
   multiply {{"int(sin(2*pi*(frame+CTRL.offset)/CTRL.waveLength)+1) * (CTRL.maxVal-CTRL.minVal) + CTRL.minVal"}}
   black_clamp false
   name SQUARE
   xpos 180
   ypos -442
  }
-push $N85fe6540
+push $Nd6ec6000
  Grade {
-  channels rgba
+  channels {{{parent.channels}}}
   multiply {{"(asin(sin(2*pi*(frame+CTRL.offset)/CTRL.waveLength))/pi+0.5) * (CTRL.maxVal-CTRL.minVal) + CTRL.minVal"}}
   black_clamp false
   name TRIANGLE
   xpos 70
   ypos -442
  }
-push $N85fe6540
+push $Nd6ec6000
  Grade {
-  channels rgba
+  channels {{{parent.channels}}}
   multiply {{"(sin(2*pi*(frame+CTRL.offset)/CTRL.waveLength)+1)/2 * (CTRL.maxVal-CTRL.minVal) + CTRL.minVal"}}
   black_clamp false
   name SINE
   xpos -40
   ypos -442
  }
-push $N85fe6540
+push $Nd6ec6000
  Grade {
-  channels rgba
+  channels {{{parent.channels}}}
   multiply {{"(noise((frame+CTRL.offset)/CTRL.waveLength)+1)/2 * (CTRL.maxVal-CTRL.minVal) + CTRL.minVal"}}
   black_clamp false
   name NOISE
   xpos -150
   ypos -442
  }
-push $N85fe6540
+push $Nd6ec6000
  Grade {
-  channels rgba
+  channels {{{parent.channels}}}
   multiply {{"(random((frame+CTRL.offset)/CTRL.waveLength) * (CTRL.maxVal-CTRL.minVal) + CTRL.minVal)"}}
   black_clamp false
   name RANDOM
@@ -146,23 +154,9 @@ push $N85fe6540
   xpos 290
   ypos -250
  }
-set N50f929d0 [stack 0]
- Shuffle {
-  alpha white
-  name Shuffle1
-  xpos 290
-  ypos -208
-  disable {{!parent.floodAlpha}}
- }
- Output {
-  name Output1
-  xpos 290
-  ypos -154
- }
-push $N50f929d0
+set N8602d880 [stack 0]
  NoOp {
   name CTRL
-  selected true
   xpos -260
   ypos -250
   addUserKnob {20 User}
@@ -177,5 +171,29 @@ push $N50f929d0
   addUserKnob {7 waveLength R 0 100}
   waveLength 10
   addUserKnob {7 offset R -100 100}
+ }
+push $N8602d880
+ Output {
+  name Output1
+  xpos 290
+  ypos -130
+ }
+ Viewer {
+  frame_range 1-100
+  name Viewer1
+  xpos 148
+  ypos -58
+  addUserKnob {20 Lock}
+  addUserKnob {6 lock_all_buffers l "lock all buffers" -STARTLINE}
+  addUserKnob {6 lock_buffer_1 l "lock buffer 1" +STARTLINE}
+  addUserKnob {6 lock_buffer_2 l "lock buffer 2" +STARTLINE}
+  addUserKnob {6 lock_buffer_3 l "lock buffer 3" +STARTLINE}
+  addUserKnob {6 lock_buffer_4 l "lock buffer 4" +STARTLINE}
+  addUserKnob {6 lock_buffer_5 l "lock buffer 5" +STARTLINE}
+  addUserKnob {6 lock_buffer_6 l "lock buffer 6" +STARTLINE}
+  addUserKnob {6 lock_buffer_7 l "lock buffer 7" +STARTLINE}
+  addUserKnob {6 lock_buffer_8 l "lock buffer 8" +STARTLINE}
+  addUserKnob {6 lock_buffer_9 l "lock buffer 9" +STARTLINE}
+  addUserKnob {6 lock_buffer_0 l "lock buffer 0" +STARTLINE}
  }
 end_group
